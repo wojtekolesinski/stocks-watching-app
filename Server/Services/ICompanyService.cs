@@ -1,11 +1,12 @@
 using Stocks.Server.Models;
+using Stocks.Shared.DTO;
 
 namespace Stocks.Server.Services;
 
 public interface ICompanyService
 {
     Task<IEnumerable<Company>> GetCompaniesAsync();
-    Task<Company> GetCompanyAsync(string ticker);
+    Task<CompanyDTO> GetCompanyAsync(string ticker);
     
 
 }

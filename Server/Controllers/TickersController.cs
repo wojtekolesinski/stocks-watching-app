@@ -20,11 +20,13 @@ public class TickersController : ControllerBase
     {
         _service = service;
     }
+    
+    
 
     [HttpGet("{ticker}")]
     public async Task<IActionResult> GetCompanies(string ticker)
     {
-        await _service.GetCompanyAsync(ticker);
-        return Ok(null);
+        
+        return Ok(await _service.GetCompanyAsync(ticker));
     }
 }

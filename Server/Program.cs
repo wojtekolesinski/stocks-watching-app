@@ -2,6 +2,9 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.EntityFrameworkCore;
 using Stocks.Server.Data;
 using Stocks.Server.Models;
+using Microsoft.AspNetCore.Identity;
+using Stocks.Server.Extensions;
+using Stocks.Server.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -20,6 +23,8 @@ builder.Services.AddIdentityServer()
 builder.Services.AddAuthentication()
     .AddIdentityServerJwt();
 
+builder.Services.AddTransient<ICompanyService, CompanyService>();
+
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
 
@@ -37,6 +42,8 @@ else
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
+
+app.UseErrorHandler();
 
 app.UseHttpsRedirection();
 

@@ -1,3 +1,5 @@
+using System.ComponentModel.DataAnnotations;
+
 namespace Stocks.Server.Models;
 
 public class Company

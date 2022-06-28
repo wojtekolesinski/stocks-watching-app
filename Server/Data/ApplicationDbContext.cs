@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.ApiAuthorization.IdentityServer;
+﻿using System.Reflection;
+using Microsoft.AspNetCore.ApiAuthorization.IdentityServer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Duende.IdentityServer.EntityFramework.Options;
@@ -19,13 +20,10 @@ public class ApplicationDbContext : ApiAuthorizationDbContext<ApplicationUser>
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
-        builder.Entity<Company>()
-            .HasMany(c => c.Users)
-            .WithMany(u => u.Companies)
-            .UsingEntity("Users_Companies");
-
-        builder.Entity<Article>()
-            .HasOne(a => a.Company)
-            .WithMany(c => c.Articles);
+        builder.ApplyConfigurationsFromAssembly(
+            typeof(Article).GetTypeInfo().Assembly
+        );
+        
+        base.OnModelCreating(builder);
     }
 }
