@@ -1,0 +1,1 @@
+# stocks-watching-app
