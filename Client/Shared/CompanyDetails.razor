@@ -1,0 +1,16 @@
+@page "/CompanyDetails"
+@using System.Globalization
+<h3>Details</h3>
+@if (Company.Branding.LogoUrl != null)
+{
+    <div>
+        <img src="@(Company.Branding.LogoUrl)" height="75" />
+    </div>
+}
+<h5>@Company.Name</h5>
+<span>Industry: @Company.Industry</span> <br/>
+<span>Country: @(new RegionInfo(Company.Country).EnglishName)</span> <br/>
+<span>Description: @Company.Description</span> <br/>
+
+
+

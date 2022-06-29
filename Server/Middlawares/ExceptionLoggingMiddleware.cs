@@ -1,4 +1,3 @@
-using System.Net;
 using NuGet.Protocol;
 using Stocks.Server.Exceptions;
 
@@ -23,7 +22,7 @@ public class ExceptionLoggingMiddleware
         }
         catch (Exception ex)
         {
-            _logger.LogError(1, $"Error: {ex.Message}");
+            _logger.LogError(1, ex.StackTrace);
             await HandleExceptionAsync(httpContext, ex);
         }
     }

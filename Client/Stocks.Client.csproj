@@ -12,11 +12,26 @@
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Authentication" Version="6.0.3" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="6.0.6" />
     <PackageReference Include="Microsoft.Extensions.Http" Version="6.0.0" />
-    <PackageReference Include="Syncfusion.Blazor" Version="20.1.0.60" />
+    <PackageReference Include="Syncfusion.Blazor.Core" Version="20.1.0.61" />
+    <PackageReference Include="Syncfusion.Blazor.DropDowns" Version="20.1.0.61" />
+    <PackageReference Include="Syncfusion.Blazor.Layouts" Version="20.1.0.61" />
+    <PackageReference Include="Syncfusion.Blazor.Themes" Version="20.1.0.61" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Shared\Stocks.Shared.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Shared\StockChart.cs">
+      <DependentUpon>StockChart.razor</DependentUpon>
+    </Compile>
+    <Compile Update="Shared\TickerSearchBar.cs">
+      <DependentUpon>TickerSearchBar.razor</DependentUpon>
+    </Compile>
+    <Compile Update="Shared\CompanyDetails.cs">
+      <DependentUpon>CompanyDetails.razor</DependentUpon>
+    </Compile>
   </ItemGroup>
 
 </Project>

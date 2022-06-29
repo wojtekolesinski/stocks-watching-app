@@ -1,0 +1,20 @@
+<h3>TickerSearchBar</h3>
+<div style="display: flex">
+    <SfAutoComplete TItem="CompanyDTO" TValue="string" Placeholder="Insert a ticker" DataSource="@LocalData" CssClass="search-bar">
+        <AutoCompleteFieldSettings Value="Ticker"/>
+        <AutoCompleteEvents TItem="CompanyDTO" TValue="string"  Filtering="OnFilter" OnValueSelect="@(args => Ticker = args.ItemData.Ticker)"/>
+        <AutoCompleteTemplates TItem="CompanyDTO">
+            <ItemTemplate>
+                <div class="search-field">
+                    <span class='ac-symbol'>
+                        @(context.Ticker)
+                    </span>
+                    <span class='ac-name'>
+                        @(context.Name)
+                    </span>
+                </div>
+            </ItemTemplate>
+        </AutoCompleteTemplates>
+    </SfAutoComplete>
+    <button class="btn btn-primary" @onclick="@(() => OnSearch.InvokeAsync(Ticker))">Search</button>
+</div>

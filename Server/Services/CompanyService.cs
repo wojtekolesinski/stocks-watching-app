@@ -1,11 +1,10 @@
-using System.Globalization;
 using System.Net;
-using System.Text.Json;
 using Microsoft.EntityFrameworkCore;
 using Stocks.Server.Data;
 using Stocks.Server.Exceptions;
-using Stocks.Server.Models;
+using Stocks.Server.Extensions;
 using Stocks.Shared.DTO;
+using JsonSerializer = System.Text.Json.JsonSerializer;
 
 namespace Stocks.Server.Services;
 
@@ -22,9 +21,45 @@ public class CompanyService : ICompanyService
         _apiKey = configuration["PolygonToken"];
     }
 
-    public async Task<IEnumerable<Company>> GetCompaniesAsync()
+    public async Task<IEnumerable<CompanyDTO>> GetCompaniesAsync(string? search)
     {
-        throw new NotImplementedException();
+
+        var companiesFromDb = await _context.Companies
+                                            .Where(c => c.Ticker.ToLower().StartsWith(search.ToLower()))
+                                            .ToListAsync();
+        if (companiesFromDb.Count != 0)
+        {
+            return companiesFromDb.Select(c => c.ToDto(""));
+        }
+        
+        var url = $"https://api.polygon.io/v3/reference/tickers?search={search}&active=true&sort=ticker&order=asc&limit=100&apiKey={_apiKey}";
+        
+        var response = await _httpClient.GetAsync(url);
+        if (!response.IsSuccessStatusCode)
+        {
+            throw response.StatusCode switch
+            {
+                HttpStatusCode.TooManyRequests => new TooManyRequestsException(),
+                HttpStatusCode.NotFound => new NotFoundException(""),
+                _ => new Exception("Something went wrong")
+            };
+        }
+        
+        var companies = (
+            await JsonSerializer
+                .DeserializeAsync<WrapperDTO<ICollection<CompanyDTO>>>(await response.Content.ReadAsStreamAsync())
+                ).Results
+                .Where(c => c.Ticker.ToLower().StartsWith(search.ToLower()))
+                .ToList();
+        
+        foreach (var companyDto in companies)
+        {
+            await _context.Companies.AddAsync(companyDto.toEntity());
+        }
+
+        await _context.SaveChangesAsync();
+
+        return companies;
     }
 
     public async Task<CompanyDTO> GetCompanyAsync(string ticker)
@@ -33,21 +68,9 @@ public class CompanyService : ICompanyService
 
         var companyFromDb = await _context.Companies.SingleOrDefaultAsync(c => c.Ticker == ticker);
         
-        if (companyFromDb != null)
+        if (companyFromDb != null & companyFromDb.HasDetails)
         {
-            return new CompanyDTO
-            {
-                Name = companyFromDb.Name,
-                Ticker = companyFromDb.Ticker,
-                Industry = companyFromDb.Industry,
-                Country = companyFromDb.Country,
-                Description = companyFromDb.Description,
-                Branding = new BrandingDTO
-                {
-                    IconUrl = companyFromDb.IconUrl,
-                    LogoUrl = companyFromDb.LogoUrl
-                }
-            };
+            return companyFromDb.ToDto(_apiKey);
         }
 
         var response = await _httpClient.GetAsync(url);
@@ -64,22 +87,24 @@ public class CompanyService : ICompanyService
         var companyDto =
             (await JsonSerializer.DeserializeAsync<WrapperDTO<CompanyDTO>>(await response.Content.ReadAsStreamAsync()))
             .Results;
-        companyDto.Country = new RegionInfo(companyDto.Country).EnglishName;
 
-        Console.WriteLine("from api");
-        await _context.Companies.AddAsync(new Company
+        if (companyFromDb != null)
         {
-            Name = companyDto.Name,
-            Ticker = companyDto.Ticker,
-            Industry = companyDto.Industry,
-            Country = companyDto.Country,
-            Description = companyDto.Description,
-            IconUrl = companyDto.Branding.IconUrl,
-            LogoUrl = companyDto.Branding.LogoUrl
-        });
-
+            companyFromDb.Country = companyDto.Country;
+            companyFromDb.Industry = companyDto.Industry;
+            companyFromDb.Description = companyDto.Description;
+            companyFromDb.IconUrl = companyDto.Branding.IconUrl;
+            companyFromDb.LogoUrl = companyDto.Branding.LogoUrl;
+            companyFromDb.HasDetails = true;
+            _context.Companies.Update(companyFromDb);
+        }
+        else
+        {
+            await _context.Companies.AddAsync(companyDto.toEntity());
+        }
+        
         await _context.SaveChangesAsync();
         
-        return companyDto;
+        return companyFromDb.ToDto(_apiKey);
     }
 }

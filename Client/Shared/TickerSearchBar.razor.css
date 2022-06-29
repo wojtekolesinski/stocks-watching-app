@@ -1,0 +1,12 @@
+﻿.ac-symbol {
+    float: left;
+}
+
+.ac-name {
+    float: right;
+}
+
+.search-bar {
+    align-self: flex-start;
+    width: 60%;
+}

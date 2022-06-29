@@ -20,5 +20,12 @@ public class CompanyDTO
     public string Description { get; set; }
     
     [JsonPropertyName("branding")] 
-    public BrandingDTO Branding { get; set; }
+    public BrandingDTO? Branding
+    {
+        get { return _branding ?? new BrandingDTO(); }
+        set { _branding = value; }
+    }
+
+    [JsonIgnore]
+    private BrandingDTO? _branding;
 }

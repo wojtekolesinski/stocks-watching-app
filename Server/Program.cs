@@ -43,7 +43,7 @@ else
     app.UseHsts();
 }
 
-app.UseErrorHandler();
+// app.UseErrorHandler();
 
 app.UseHttpsRedirection();
 

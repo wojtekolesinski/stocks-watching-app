@@ -1,9 +1,59 @@
 ﻿@page "/"
+@page "/{Ticker}"
+
 
 <PageTitle>Index</PageTitle>
 
-<h1>Hello, world!</h1>
+<TickerSearchBar OnSearch="OnSearch"></TickerSearchBar>
 
-Welcome to your new app.
+@if (SelectedCompany != null)
+{
+    
+    <CompanyDetails Company="SelectedCompany" @ref="cd"></CompanyDetails>
+    <StockChart></StockChart>
+    
+}
+@code {
+    [Inject] NavigationManager _navigationManager { get; set; }
+    [Inject] HttpClient _httpClient { get; set; }
+    
+    [Parameter] public string Ticker { get; set; }
 
-<SurveyPrompt Title="How is Blazor working for you?" />
+    public CompanyDTO SelectedCompany { get; set; }
+    public CompanyDetails cd { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadCompany();
+    }
+
+    public async Task LoadCompany()
+    {
+        if (Ticker != null)
+        {
+            SelectedCompany = await _httpClient.GetFromJsonAsync<CompanyDTO>($"api/Tickers/{Ticker}");
+            Console.WriteLine($"Company: {Ticker}");
+        }
+        else
+        {
+            SelectedCompany = null;
+        }
+        await InvokeAsync(StateHasChanged);
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        LoadCompany();
+    }
+
+    public async Task OnSearch(string ticker)
+    {
+        _navigationManager.NavigateTo($"/{ticker}");
+        SelectedCompany = null;
+        await LoadCompany();
+        StateHasChanged();
+    }
+
+
+}
+
