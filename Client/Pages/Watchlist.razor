@@ -1,0 +1,39 @@
+@page "/Watchlist"
+<h3>Watchlist</h3>
+
+<SfGrid DataSource="@Subscriptions" TValue="CompanyDTO" @ref="Grid" 
+        AllowPaging="true" AllowSorting="true" AllowResizing="true" AllowSelection="true">
+    <GridPageSettings PageSize="5"/>
+    <GridEvents OnLoad="Load" CommandClicked="OnCommandClicked" TValue="CompanyDTO"/>
+    <GridEditSettings AllowDeleting="true" Mode="EditMode.Batch"></GridEditSettings>
+    
+    <GridColumns>
+        <GridColumn Field=@nameof(CompanyDTO.Name) HeaderText="Name" TextAlign="TextAlign.Left"/>
+        <GridColumn Field=@nameof(CompanyDTO.Ticker) HeaderText="Ticker" TextAlign="TextAlign.Left"/>
+        <GridColumn Field=@nameof(CompanyDTO.Country) HeaderText="Country" TextAlign="TextAlign.Left"/>
+        <GridColumn Field=@nameof(CompanyDTO.Industry) HeaderText="Industry" TextAlign="TextAlign.Left"/>
+        <GridColumn HeaderText="">
+            <GridCommandColumns>
+            <GridCommandColumn Type="CommandButtonType.Delete" ButtonOption="@(new CommandButtonOptions() { IconCss = "e-icons e-delete", CssClass = "e-flat" })"/>
+        </GridCommandColumns>
+        </GridColumn>
+    </GridColumns>
+</SfGrid>
+
+@code {
+    [Inject] public HttpClient _httpClient { get; set; }
+    
+    public List<CompanyDTO> Subscriptions { get; set; }
+    public SfGrid<CompanyDTO> Grid { get; set; }
+
+    public async Task Load(object args)
+    {
+        Subscriptions = await _httpClient.GetFromJsonAsync<List<CompanyDTO>>("api/Subscriptions");
+    }
+    
+    public async Task OnCommandClicked(CommandClickEventArgs<CompanyDTO> args)
+    {
+        await _httpClient.DeleteAsync();
+    }
+
+}

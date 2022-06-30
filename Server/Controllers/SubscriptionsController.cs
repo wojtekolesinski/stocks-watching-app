@@ -35,6 +35,15 @@ public class SubscriptionsController : ControllerBase
     {
         var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-        return Ok(await _service.AddSubscribtion(userId, company));
+        await _service.AddSubscribtion(userId, company);
+
+        return NoContent();
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> GetSubscriptions()
+    {
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        return Ok(await _service.GetSubscriptions(userId));
     }
 }

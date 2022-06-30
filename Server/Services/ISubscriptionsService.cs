@@ -4,5 +4,6 @@ namespace Stocks.Server.Services;
 
 public interface ISubscriptionsService
 {
-    Task<object?> AddSubscribtion(string userId, CompanyDTO company);
+    Task AddSubscribtion(string userId, CompanyDTO company);
+    Task<IEnumerable<CompanyDTO>> GetSubscriptions(string userId);
 }
