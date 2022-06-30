@@ -1,0 +1,14 @@
+<button @onclick="OnClick" class="btn btn-primary">Subscribe</button>
+
+@code {
+    [Inject] public HttpClient _httpClient { get; set; }
+
+    [Parameter]
+    public CompanyDTO Company { get; set; }
+    
+    public async Task OnClick()
+    {
+        await _httpClient.PostAsJsonAsync("api/subscriptions/", Company);
+    }
+
+}

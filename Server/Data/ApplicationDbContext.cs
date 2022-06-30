@@ -11,6 +11,7 @@ public class ApplicationDbContext : ApiAuthorizationDbContext<ApplicationUser>
 {
     public DbSet<Company> Companies { get; set; }
     public DbSet<Article> Articles { get; set; }
+    public DbSet<StockPriceData> StockPrices { get; set; }
     
     public ApplicationDbContext(
         DbContextOptions options,

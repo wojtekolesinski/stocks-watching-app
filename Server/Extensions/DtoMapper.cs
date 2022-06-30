@@ -39,4 +39,35 @@ public static class DtoMapper
             LogoUrl = companyDto.Branding.LogoUrl
         };
     }
+
+    public static ChartDataDTO toDto(this StockPriceData sp)
+    {
+        return new ChartDataDTO
+        {
+            Close = sp.Close,
+            Open = sp.Open,
+            High = sp.High,
+            Low = sp.Low,
+            Volume = sp.Volume,
+            PreMarket = sp.PreMarket ?? 0,
+            AfterHours = sp.AfterHours ?? 0,
+            Date = sp.Date,
+        };
+    }
+
+    public static StockPriceData toEntity(this ChartDataDTO chartDataDto, Company company)
+    {
+        return new StockPriceData
+        {
+            Close = chartDataDto.Close,
+            Open = chartDataDto.Open,
+            High = chartDataDto.High,
+            Low = chartDataDto.Low,
+            Volume = chartDataDto.Volume,
+            PreMarket = chartDataDto.PreMarket,
+            AfterHours = chartDataDto.AfterHours,
+            Date = chartDataDto.Date,
+            Company = company
+        };
+    }
 }

@@ -24,6 +24,7 @@ builder.Services.AddAuthentication()
     .AddIdentityServerJwt();
 
 builder.Services.AddTransient<ICompanyService, CompanyService>();
+builder.Services.AddTransient<ISubscriptionsService, SubscriptionsService>();
 
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();

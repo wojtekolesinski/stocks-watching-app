@@ -9,7 +9,7 @@ using Stocks.Server.Services;
 
 namespace Stocks.Server.Controllers;
 
-// [Authorize]
+[Authorize]
 [Route("api/[controller]")]
 [ApiController]
 public class TickersController : ControllerBase
@@ -36,5 +36,17 @@ public class TickersController : ControllerBase
         }
 
         return Ok(await _service.GetCompaniesAsync(search));
+    }
+    
+    [HttpGet("{ticker}/data")]
+    public async Task<IActionResult> GetCompanyPriceData(string ticker)
+    {
+        return Ok(await _service.GetCompanyPriceDataAsync(ticker));
+    }
+    
+    [HttpGet("{ticker}/news")]
+    public async Task<IActionResult> GetCompanyNew(string ticker)
+    {
+        return Ok(await _service.GetCompanyNewsAsync(ticker));
     }
 }

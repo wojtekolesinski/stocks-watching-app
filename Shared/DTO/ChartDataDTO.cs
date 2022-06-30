@@ -19,8 +19,21 @@ public class ChartDataDTO
     [JsonPropertyName("v")]
     public double Volume { get; set; }
     
-    [JsonPropertyName("t")]
-    public int Timestamp { get; set; }
+    [JsonPropertyName("preMarket")]
+    public double PreMarket { get; set; }
     
+    [JsonPropertyName("afterHours")]
+    public double AfterHours { get; set; }
+
+    [JsonPropertyName("t")]
+    public long Timestamp
+    {
+        set
+        {
+            Date = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc)
+                .AddMilliseconds(value);
+        }
+    }
+
     public DateTime Date { get; set; }
 }

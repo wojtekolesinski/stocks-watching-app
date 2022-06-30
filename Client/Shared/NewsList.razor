@@ -1,0 +1,17 @@
+<h3>NewsList</h3>
+
+@if (DataReady)
+{
+
+    <ul class="list-group">
+        @foreach (var article in Articles)
+        {
+            <div class="m-1">
+                <div><a href="@article.Url"><h5>@article.Title</h5></a></div>
+                <div><b>@article.Author</b></div>
+                <div>@article.Description</div>
+
+            </div>
+        }
+    </ul>
+}

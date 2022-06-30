@@ -1,2 +1,35 @@
-<h3>StockChart</h3>
+<SfStockChart Title="@Company.Name" @ref="@_stockChart">
+    <StockChartCrosshairSettings Enable="true" LineType="LineType.Vertical"/>
+    <StockChartTooltipSettings Enable="true" Shared="true"/>
+    <StockChartSeriesCollection>
+        <StockChartSeries DataSource="@Data" Type="ChartSeriesType.Candle" XName="Date" YName="Close" High="High" Low="Low" Open="Open" Close="Close" Volume="Volume"/>
+    </StockChartSeriesCollection>
 
+</SfStockChart>
+@if (DoneLoading)
+{
+
+    <div style="display: flex" >
+        <div class="m-5">
+            <div>From: @TodaysData.Date.ToString("yy-MM-dd")</div>
+            <div>Symbol: @Company.Ticker</div>
+            <div>Open: @TodaysData.Open</div>
+            <div>High: @TodaysData.High</div>
+            <div>Low: @TodaysData.Low</div>
+        </div>
+        <div class="m-5">
+            <div>Close: @TodaysData.Close</div>
+            <div>Volume: @TodaysData.Volume</div>
+            @if (TodaysData.AfterHours != null)
+            {
+                <div>After hours: @TodaysData.AfterHours</div>
+                <div>Pre market: @TodaysData.PreMarket</div>
+            }
+
+        </div>
+    </div>
+}
+else
+{
+    <SfSpinner></SfSpinner>
+}

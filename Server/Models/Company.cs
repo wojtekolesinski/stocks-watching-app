@@ -16,5 +16,5 @@ public class Company
     
     public virtual ICollection<ApplicationUser> Users { get; set; }
     public virtual ICollection<Article> Articles { get; set; }
-    
+    public virtual ICollection<StockPriceData> StockPrices { get; set; }
 }

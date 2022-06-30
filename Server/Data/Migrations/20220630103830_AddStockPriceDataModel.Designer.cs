@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Stocks.Server.Data;
 
@@ -11,9 +12,10 @@ using Stocks.Server.Data;
 namespace Stocks.Server.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220630103830_AddStockPriceDataModel")]
+    partial class AddStockPriceDataModel
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -450,9 +452,6 @@ namespace Stocks.Server.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<double?>("AfterHours")
-                        .HasColumnType("float");
-
                     b.Property<double>("Close")
                         .HasColumnType("float");
 
@@ -462,9 +461,6 @@ namespace Stocks.Server.Data.Migrations
                     b.Property<DateTime>("Date")
                         .HasColumnType("datetime2");
 
-                    b.Property<bool>("HasDailyData")
-                        .HasColumnType("bit");
-
                     b.Property<double>("High")
                         .HasColumnType("float");
 
@@ -472,9 +468,6 @@ namespace Stocks.Server.Data.Migrations
                         .HasColumnType("float");
 
                     b.Property<double>("Open")
-                        .HasColumnType("float");
-
-                    b.Property<double?>("PreMarket")
                         .HasColumnType("float");
 
                     b.Property<double>("Volume")

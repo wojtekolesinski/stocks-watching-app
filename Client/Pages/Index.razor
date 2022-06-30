@@ -2,17 +2,27 @@
 @page "/{Ticker}"
 
 
+<AuthorizeView>
+    <NotAuthorized>
+        Please log in
+    </NotAuthorized>
+    <Authorized>
+        <TickerSearchBar OnSearch="OnSearch"></TickerSearchBar>
+        @if (SelectedCompany != null)
+        {
+
+            <AddToWatchlistButton Company="SelectedCompany"/>
+            <CompanyDetails Company="SelectedCompany"/>
+            <StockChart Company="SelectedCompany"/>
+            <NewsList Company="SelectedCompany"/>
+
+        }
+    </Authorized>
+</AuthorizeView>
 <PageTitle>Index</PageTitle>
 
-<TickerSearchBar OnSearch="OnSearch"></TickerSearchBar>
 
-@if (SelectedCompany != null)
-{
-    
-    <CompanyDetails Company="SelectedCompany" @ref="cd"></CompanyDetails>
-    <StockChart></StockChart>
-    
-}
+
 @code {
     [Inject] NavigationManager _navigationManager { get; set; }
     [Inject] HttpClient _httpClient { get; set; }
@@ -20,7 +30,6 @@
     [Parameter] public string Ticker { get; set; }
 
     public CompanyDTO SelectedCompany { get; set; }
-    public CompanyDetails cd { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
