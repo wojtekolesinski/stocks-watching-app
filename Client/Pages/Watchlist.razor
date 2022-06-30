@@ -1,4 +1,6 @@
 @page "/Watchlist"
+@attribute [Authorize]
+
 <h3>Watchlist</h3>
 
 <SfGrid DataSource="@Subscriptions" TValue="CompanyDTO" @ref="Grid" 
