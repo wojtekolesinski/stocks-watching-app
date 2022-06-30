@@ -67,7 +67,7 @@ public class CompanyService : ICompanyService
 
     public async Task<CompanyDTO> GetCompanyAsync(string ticker)
     {
-        var companyFromDb = await _context.Companies.SingleOrDefaultAsync(c => c.Ticker == ticker);
+        var companyFromDb = await _context.Companies.FirstOrDefaultAsync(c => c.Ticker == ticker);
         
         if (companyFromDb != null & companyFromDb.HasDetails)
         {
@@ -114,7 +114,7 @@ public class CompanyService : ICompanyService
     {
         var stockPricesFromDb = await _context.StockPrices.Where(s => s.Company.Ticker == ticker).ToListAsync();
         await GetCompanyAsync(ticker);
-        var companyFromDb = await _context.Companies.SingleAsync(c => c.Ticker == ticker);
+        var companyFromDb = await _context.Companies.FirstAsync(c => c.Ticker == ticker);
         DateTime? maxSavedDate = null;
         if (stockPricesFromDb.Count > 0)
         {
@@ -158,7 +158,7 @@ public class CompanyService : ICompanyService
             priceData = priceData.Union(stockPricesFromDb.Select(sp => sp.toDto())).ToList();
         }
 
-        var todaysData = priceData.Single(e => e.Date == priceData.Max(d => d.Date));
+        var todaysData = priceData.First(e => e.Date == priceData.Max(d => d.Date));
         var todaysDataUpdated = await GetCompanyPriceDailyAsync(ticker);
         todaysData.PreMarket = todaysDataUpdated.PreMarket; 
         todaysData.AfterHours = todaysDataUpdated.AfterHours; 
@@ -168,7 +168,7 @@ public class CompanyService : ICompanyService
 
     public async Task<ChartDataDTO> GetCompanyPriceDailyAsync(string ticker)
     {
-        var stockPriceFromDb = await _context.StockPrices.SingleAsync(sp => sp.Company.Ticker == ticker & sp.Date.Date == DateTime.Today.AddDays(-1).Date);
+        var stockPriceFromDb = await _context.StockPrices.FirstAsync(sp => sp.Company.Ticker == ticker & sp.Date.Date == DateTime.Today.AddDays(-1).Date);
 
         if (stockPriceFromDb.HasDailyData)
         {

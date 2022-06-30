@@ -21,8 +21,6 @@
 </AuthorizeView>
 <PageTitle>Index</PageTitle>
 
-
-
 @code {
     [Inject] NavigationManager _navigationManager { get; set; }
     [Inject] HttpClient _httpClient { get; set; }
@@ -30,6 +28,7 @@
     [Parameter] public string Ticker { get; set; }
 
     public CompanyDTO SelectedCompany { get; set; }
+    public AddToWatchlistButton Button { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
@@ -41,7 +40,6 @@
         if (Ticker != null)
         {
             SelectedCompany = await _httpClient.GetFromJsonAsync<CompanyDTO>($"api/Tickers/{Ticker}");
-            Console.WriteLine($"Company: {Ticker}");
         }
         else
         {

@@ -6,4 +6,5 @@ public interface ISubscriptionsService
 {
     Task AddSubscribtion(string userId, CompanyDTO company);
     Task<IEnumerable<CompanyDTO>> GetSubscriptions(string userId);
+    Task DeleteSubscriptionAsync(string userId, string ticker);
 }

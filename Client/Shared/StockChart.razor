@@ -1,13 +1,13 @@
-<SfStockChart Title="@Company.Name" @ref="@_stockChart">
-    <StockChartCrosshairSettings Enable="true" LineType="LineType.Vertical"/>
-    <StockChartTooltipSettings Enable="true" Shared="true"/>
-    <StockChartSeriesCollection>
-        <StockChartSeries DataSource="@Data" Type="ChartSeriesType.Candle" XName="Date" YName="Close" High="High" Low="Low" Open="Open" Close="Close" Volume="Volume"/>
-    </StockChartSeriesCollection>
-
-</SfStockChart>
 @if (DoneLoading)
 {
+    <SfStockChart Title="@Company.Name" @ref="@_stockChart">
+        <StockChartCrosshairSettings Enable="true" LineType="LineType.Vertical"/>
+        <StockChartTooltipSettings Enable="true" Shared="true"/>
+        <StockChartSeriesCollection>
+            <StockChartSeries DataSource="@Data" Type="ChartSeriesType.Candle" XName="Date" YName="Close" High="High" Low="Low" Open="Open" Close="Close" Volume="Volume"/>
+        </StockChartSeriesCollection>
+
+    </SfStockChart>
 
     <div style="display: flex" >
         <div class="m-5">
@@ -31,5 +31,5 @@
 }
 else
 {
-    <SfSpinner></SfSpinner>
+    <SfSpinner CssClass="m-5" Label="Loading...." Type="SpinnerType.Bootstrap5" Visible="@(true)"></SfSpinner>
 }

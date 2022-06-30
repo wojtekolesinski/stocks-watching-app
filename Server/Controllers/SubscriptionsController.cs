@@ -1,15 +1,7 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Security.Claims;
-using System.Threading.Tasks;
-using Duende.IdentityServer.Extensions;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
-using NuGet.Protocol;
 using Stocks.Server.Models;
 using Stocks.Server.Services;
 using Stocks.Shared.DTO;
@@ -45,5 +37,15 @@ public class SubscriptionsController : ControllerBase
     {
         var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
         return Ok(await _service.GetSubscriptions(userId));
+    }
+
+    [HttpDelete("{ticker}")]
+    public async Task<IActionResult> DeleteSubscription(string ticker)
+    {
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+        await _service.DeleteSubscriptionAsync(userId, ticker);
+
+        return NoContent();
     }
 }

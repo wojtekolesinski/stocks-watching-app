@@ -1,14 +1,40 @@
-<button @onclick="OnClick" class="btn btn-primary">Subscribe</button>
+<btn @onclick="Subscribe" class="@Style">@Content</btn>
 
 @code {
     [Inject] public HttpClient _httpClient { get; set; }
 
-    [Parameter]
-    public CompanyDTO Company { get; set; }
-    
-    public async Task OnClick()
+    [Parameter] public CompanyDTO Company { get; set; }
+    [Parameter] public EventCallback OnAction { get; set; }
+    public string Content { get; set; } = "Subscribe";
+    public string Style { get; set; } = "btn btn-primary";
+
+    protected override async Task OnInitializedAsync()
     {
-        await _httpClient.PostAsJsonAsync("api/subscriptions/", Company);
+        if ((await _httpClient.GetFromJsonAsync<List<CompanyDTO>>("api/Subscriptions"))
+            .Any(c => c.Ticker == Company.Ticker))
+        {
+            Style = "btn btn-danger";
+            Content = "Unsubscribe";
+            StateHasChanged();
+        }
+        await base.OnInitializedAsync();
+    }
+
+    public async Task Subscribe()
+    {
+        if (Content == "Subscribe")
+        {
+            Content = "Unsubscribe";
+            Style = "btn btn-danger";
+            await _httpClient.PostAsJsonAsync("api/subscriptions/", Company);
+        }
+        else
+        {
+            Content = "Subscribe";
+            Style = "btn btn-primary";
+            await _httpClient.DeleteAsync($"api/subscriptions/{Company.Ticker}");
+        }
+        StateHasChanged();
     }
 
 }

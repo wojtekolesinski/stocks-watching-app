@@ -12,16 +12,18 @@
         <GridColumn Field=@nameof(CompanyDTO.Ticker) HeaderText="Ticker" TextAlign="TextAlign.Left"/>
         <GridColumn Field=@nameof(CompanyDTO.Country) HeaderText="Country" TextAlign="TextAlign.Left"/>
         <GridColumn Field=@nameof(CompanyDTO.Industry) HeaderText="Industry" TextAlign="TextAlign.Left"/>
-        <GridColumn HeaderText="">
+        <GridColumn HeaderText="" Width="50">
             <GridCommandColumns>
-            <GridCommandColumn Type="CommandButtonType.Delete" ButtonOption="@(new CommandButtonOptions() { IconCss = "e-icons e-delete", CssClass = "e-flat" })"/>
-        </GridCommandColumns>
+                <GridCommandColumn Type="CommandButtonType.Delete" ButtonOption="@(new CommandButtonOptions() { IconCss = "e-icons e-delete", CssClass = "e-flat" })"/>
+            </GridCommandColumns>
         </GridColumn>
     </GridColumns>
 </SfGrid>
+<button class="btn-primary btn" @onclick="@(() => _navigationManager.NavigateTo("/"))">Back</button>
 
 @code {
     [Inject] public HttpClient _httpClient { get; set; }
+    [Inject] public NavigationManager _navigationManager { get; set; }
     
     public List<CompanyDTO> Subscriptions { get; set; }
     public SfGrid<CompanyDTO> Grid { get; set; }
@@ -33,7 +35,7 @@
     
     public async Task OnCommandClicked(CommandClickEventArgs<CompanyDTO> args)
     {
-        await _httpClient.DeleteAsync();
+        await _httpClient.DeleteAsync($"api/Subscriptions/{args.RowData.Ticker}");
     }
 
 }

@@ -19,13 +19,15 @@ public class SubscriptionsService : ISubscriptionsService
     
     public async Task AddSubscribtion(string userId, CompanyDTO company)
     {
-        var userFromDb = await _context.Users.SingleOrDefaultAsync(u => u.Id == userId);
-        var companyFromDb = await _context.Companies.SingleOrDefaultAsync(c => c.Ticker == company.Ticker);
+        var userFromDb = await _context.Users
+            .Include(u => u.Companies)
+            .SingleOrDefaultAsync(u => u.Id == userId);        
+        var companyFromDb = await _context.Companies.FirstOrDefaultAsync(c => c.Ticker == company.Ticker);
 
         if (userFromDb == null | companyFromDb == null)
             throw new BadRequestException();
         
-        if (userFromDb.Companies.Contains(companyFromDb))
+        if (userFromDb.Companies.Any(c => c.Id == companyFromDb.Id))
             return;
         
         userFromDb.Companies.Add(companyFromDb);
@@ -42,5 +44,24 @@ public class SubscriptionsService : ISubscriptionsService
             throw new BadRequestException();
 
         return userFromDb.Companies.Select(c => c.ToDto(_apiKey));
+    }
+
+    public async Task DeleteSubscriptionAsync(string userId, string ticker)
+    {
+        var userFromDb = await _context.Users
+            .Include(u => u.Companies)
+            .SingleOrDefaultAsync(u => u.Id == userId);
+        var companyFromDb = await _context.Companies.SingleOrDefaultAsync(c => c.Ticker == ticker);
+
+        if (userFromDb == null | companyFromDb == null)
+            throw new BadRequestException();
+        
+        if (userFromDb.Companies.Any(c => c.Id == companyFromDb.Id))
+        {
+            return;
+        }
+
+        userFromDb.Companies.Remove(companyFromDb);
+        await _context.SaveChangesAsync();
     }
 }

@@ -1,13 +1,13 @@
-<h3>NewsList</h3>
 
 @if (DataReady)
 {
+<h3>Top 5 News</h3>
 
     <ul class="list-group">
         @foreach (var article in Articles)
         {
             <div class="m-1">
-                <div><a href="@article.Url"><h5>@article.Title</h5></a></div>
+                <div><a href="@article.Url" target="_blank"><h5>@article.Title</h5></a></div>
                 <div><b>@article.Author</b></div>
                 <div>@article.Description</div>
 

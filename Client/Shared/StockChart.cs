@@ -1,3 +1,4 @@
+using System.Collections.ObjectModel;
 using System.Net.Http.Json;
 using System.Text.Json;
 using Microsoft.AspNetCore.Components;
@@ -12,16 +13,14 @@ public partial class StockChart
     
     [Parameter] public CompanyDTO Company { get; set; }
 
-    public List<ChartDataDTO> Data { get; set; }
+    public ObservableCollection<ChartDataDTO> Data { get; set; }
     public ChartDataDTO TodaysData { get; set; }
     protected SfStockChart _stockChart { get; set; }
     public bool DoneLoading { get; set; }
 
     public async Task LoadData()
     {
-        Data = await _httpClient.GetFromJsonAsync<List<ChartDataDTO>>($"api/Tickers/{Company.Ticker}/data");
-        _stockChart.Refresh();
-
+        Data = await _httpClient.GetFromJsonAsync<ObservableCollection<ChartDataDTO>>($"api/Tickers/{Company.Ticker}/data");
     }
 
     protected override async Task OnInitializedAsync()
@@ -30,6 +29,7 @@ public partial class StockChart
         TodaysData = Data.Single(e => e.Date == Data.Max(d => d.Date));
         DoneLoading = true;
         StateHasChanged();
+        _stockChart.Refresh();
         await base.OnInitializedAsync();
     }
 }
